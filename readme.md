@@ -1,47 +1,19 @@
-This is an example of an basic docker setup for a node api
 
-### Build image:
+WITH PICTURES EXAMPLES IN THE DOC REF
+USERS basic url: 3.76.104.230:3000/api/users
+    GET: 3.76.104.230:3000/api/users - fetches all users
+    GET: 3.76.104.230:3000/api/users/id - fetches data for single user
+    POST: 3.76.104.230:3000/api/users/insert - inserts a new user
+    DELETE: 3.76.104.230:3000/api/users/id - deletes a user
+    PATCH: 3.76.104.230:3000/api/users/id - updates a user
 
-    docker build -t node-api:v1 .
+DEPARTMENTS basic url: 3.76.104.230:3000/api/department
+    GET: 3.76.104.230:3000/api/department - fetches all departments
+    GET: 3.76.104.230:3000/api/department/id - fetches data for single department
+    POST: 3.76.104.230:3000/api/department/insert - inserts a new department
+    POST: 3.76.104.230:3000/api/department/id - inserts a new department
 
-## create network
 
-    docker network create node-api-network
+To activate the 3rd API 
+Use this url: 3.76.104.230:3000/api/info
 
-## Start MYSQL:
-    
-    docker run \
-    --rm \
-    -d \
-    --name mysql_server \
-    -e MYSQL_DATABASE='test_db' \
-    -e MYSQL_USER='dan' \
-    -e MYSQL_PASSWORD='secret' \
-    -e MYSQL_ROOT_PASSWORD='secret' \
-    --network node-api-network \
-    mysql:8.0 
-
-    
-## Start node-api
-
-    docker run \
-    --rm \
-    --name node-app \
-    --network node-api-network \
-    -p 3000:3000 \
-    -v $(pwd):/app \
-    node-api:v1 
-
-## Stop running container using
-
-    docker stop node-app
-    docker stop mysql_server
-
-## or start using
-
-    docker-compose up
-
-## and stop using
-
-    docker-compose down
-    

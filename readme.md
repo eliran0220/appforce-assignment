@@ -1,5 +1,6 @@
 
 WITH PICTURES EXAMPLES IN THE DOC REF
+
 USERS basic url: 3.76.104.230:3000/api/users
     GET: 3.76.104.230:3000/api/users - fetches all users
     GET: 3.76.104.230:3000/api/users/id - fetches data for single user

@@ -1,24 +1,64 @@
-version: "3.8"
+version: '3.8'
 
 services: 
-  app:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    ports: 
-      - 3000:3000
-    volumes: 
-      - .:/app
-      - '/app/node_modules'
-    depends_on: 
-      - mysql_server
-  
-  mysql_server:
+  mysqldb:
     image: mysql:8.0
-    environment: 
-      - MYSQL_DATABASE=test_db
-      - MYSQL_USER=dan
-      - MYSQL_PASSWORD=secret
-      - MYSQL_ROOT_PASSWORD=secret
+    restart: always
+    env_file: ./.env
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+    ports:
+      - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
+    volumes: 
+      - db-config:/etc/mysql
+      - db-data:/var/lib/mysql
+      - db-backup:/data_backup/data
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file: ./.env
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    volumes: 
+      - ./appsforce:/appsforce
+      - ./node_modules:/node_modules
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+volumes: 
+  db-config:
+  db-data:
+  db-backup:
+# version: "3.8"
+
+# services: 
+#   app:
+#     build: 
+#       context: .
+#       dockerfile: Dockerfile
+#     ports: 
+#       - 3000:3000
+#     volumes: 
+#       - .:/app
+#       - '/app/node_modules'
+#     depends_on: 
+#       - sql-server
+  
+#   sql-server:
+#     image: mysql:8.0
+#     environment: 
+#       - MYSQL_DATABASE=test_db
+#       - MYSQL_USER=eliran
+#       - MYSQL_PASSWORD=secret
+#       - MYSQL_ROOT_PASSWORD=secret   
 
     
